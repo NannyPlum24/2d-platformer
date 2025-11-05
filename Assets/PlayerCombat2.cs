@@ -4,7 +4,10 @@ using UnityEngine;
 public class PlayerCombat2 : MonoBehaviour
 {
     public Animator animator;
-    // Update is called once per frame
+    public Transform attackPoint;
+    public float attackRange = 0.5f;
+    public LayerMask enemyLayers;
+    public int attackDamage = 40;
     bool attack2 = false;
 
     void Update()
@@ -24,7 +27,7 @@ public class PlayerCombat2 : MonoBehaviour
             attack2 = false;
             animator.SetBool("IsAttacking2", false);
         }
-
+        if (attack2 == true)
         {
             Player_Attack2();
         }
@@ -33,9 +36,28 @@ public class PlayerCombat2 : MonoBehaviour
 
         void Player_Attack2()
         {
-            animator.SetTrigger("Player_Attack2");
+            animator.SetTrigger("Attack");
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
+
+            foreach (Collider2D enemy in hitEnemies)
+            {
+                enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+            }
 
         }
+
+        void OnDrawGizmosSelected()
+        {
+            if (attackPoint == null)
+                return;
+
+            Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+
+        }
+
+
+
+
     }
 }

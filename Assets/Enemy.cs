@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using UnityEditor.Rendering;
 
 public class Enemy : MonoBehaviour
 {
@@ -6,6 +8,10 @@ public class Enemy : MonoBehaviour
 
     public int maxHealth = 100;
     public int currentHealth;
+    bool IsHurt = false;
+    bool IsDead = false;
+
+    float delayTime = 0.1f;
     void Start()
     {
         currentHealth = maxHealth;
@@ -15,23 +21,21 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(int damage)
     {
        currentHealth -= damage;
-        animator.SetBool("IsHurt",true);
+       
 
+        StartCoroutine(DelayAction(delayTime));
 
+      
 
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+       
 
     }
 
     void Die()
     {
-        Debug.Log("Enemy died!");
-
         animator.SetBool("IsDead", true);
+        Debug.Log("Enemy died!");
+       
 
         GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
@@ -39,5 +43,25 @@ public class Enemy : MonoBehaviour
 
 
 
+    }
+
+    IEnumerator DelayAction(float delayTime)
+    {
+        if (currentHealth <= 0)
+        {
+            Die();
+        } 
+        else
+        {
+            animator.SetBool("IsHurt", true);
+            //Wait for the specified delay time before continuing.
+            yield return new WaitForSeconds(delayTime);
+
+            //Do the action after the delay time has finished.
+            animator.SetBool("IsHurt", false);
+
+        }
+
+          
     }
 }
