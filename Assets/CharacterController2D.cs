@@ -145,5 +145,7 @@ using UnityEngine.Events;
             theScale.x *= -1;
             transform.localScale = theScale;
         }
-    }
+    public static float Coins;
+
+}
 
